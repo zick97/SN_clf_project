@@ -142,19 +142,25 @@ import matplotlib.pyplot as plt
 def plot_data(data, SNID):
     line = data[data['SNID'] == SNID].reset_index()
     # Create a figure and an axis
-    fig, ax = plt.subplots(4, sharex=True, figsize=(8,14))
-    fig.suptitle(f'SN {SNID} Light Curve', fontsize=18)
+    fig, ax = plt.subplots(2, 2, sharex=True, figsize=(10,6))
+    plt.suptitle(f'Light curve for SNID = {SNID}', fontsize=18)
     fig.tight_layout()
-    plt.subplots_adjust(hspace=0.05)
-    for i, flt in enumerate(['g', 'r', 'i', 'z']):
+    for k, flt in enumerate(['g', 'r', 'i', 'z']):
         x_values = line[flt][0][0]
         y_values = line[flt][0][1]
         error_values = line[flt][0][2]
+        # Get the subplot indexes
+        i = k // 2
+        j = k % 2
         # Plot the data with error bars
-        ax[i].errorbar(x_values, y_values, yerr=error_values, fmt='o', color='black')
-        ax[i].set_xticks(np.linspace(min(x_values), max(x_values), 8))
-        ax[i].grid(True, linestyle='--')
-    
-    plt.xlabel('$T_{obs}$ $[K]$', fontsize=14, loc='right')
-    plt.ylabel('$Flux$ $\\left[ 10^{-0.4*mag + 11} \\right]$', fontsize=14, loc='center')
+        ax[i, j].errorbar(x_values, y_values, yerr=error_values, fmt='o', capsize=3.5, markersize=3.5, 
+                          elinewidth=1, color='black')
+        # Position the y-axis label
+        if j == 0:
+            ax[i, j].set_ylabel('$Flux$ $\\left[ 10^{-0.4*mag + 11} \\right]$', fontsize=13, rotation=90, labelpad=10)
+        # Adjust other parameters
+        ax[i, j].tick_params(axis='x')
+        ax[i, j].grid(True, linestyle='--')
+        ax[i, j].set_title(f'Filter ${flt}$', fontsize=14)
+    plt.xlabel('$T_{obs}$', fontsize=13, loc='right')
     plt.show()
