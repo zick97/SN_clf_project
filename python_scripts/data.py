@@ -1,5 +1,7 @@
 import requests
 import tarfile
+
+import os, sys
 from os.path import exists
 
 # Function to download and extract the dataset
@@ -93,7 +95,7 @@ def str_to_float(lst):
         return np.array([np.array([float(value) for value in sublst]) for sublst in lst])
 
 # Function to generate the dataframe for all the .DAT files inside a folder
-# Notice that the function does not use the concat() method, which is very slow, but instead uses the loc[] method
+# Notice that the function does not use the concat() method, which is very slow, but instead uses the loc() method
 # in order to fill the dataframe step by step
 def make_data(folder_path):
     # Get the dataset from the file 'dataset.csv'
@@ -106,10 +108,10 @@ def make_data(folder_path):
         file_list = [file for file in os.listdir(folder_path) if file.startswith('DES_SN') and file.endswith('.DAT')]
 
         # Create a dataframe with the index being the file names and the columns being the keywords
-        df = pd.DataFrame(index=file_list[:10], columns=make_df(os.path.join(folder_path, file_list[0]))[1].columns)
+        df = pd.DataFrame(index=file_list, columns=make_df(os.path.join(folder_path, file_list[0]))[1].columns)
 
         # Iterate over the files using tqdm to show a progress bar
-        for file in tqdm(file_list[:10], bar_format='{l_bar}{bar:20}{r_bar}{bar:-20b}'):
+        for file in tqdm(file_list, bar_format='{l_bar}{bar:20}{r_bar}{bar:-20b}'):
             file_path = os.path.join(folder_path, file)
             # Call the make_df() function to generate the dataframe for each file
             _, file_df = make_df(file_path)
@@ -138,7 +140,7 @@ import matplotlib.pyplot as plt
 
 # Function to plot each filter's flux with respect to T_obs, visualizing 4 light curves for the same SN
 def plot_data(data, SNID):
-    line = data[data['SNID'] == SNID]
+    line = data[data['SNID'] == SNID].reset_index()
     # Create a figure and an axis
     fig, ax = plt.subplots(4, sharex=True, figsize=(8,14))
     fig.suptitle(f'SN {SNID} Light Curve', fontsize=18)
