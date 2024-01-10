@@ -1,3 +1,5 @@
+### Supernova Photometric Classification using Machine Learning
+
 For some years now, astrophysics - as well as a wide variety of scientific disciplines - has been facing an era of huge, wide-field surveys that provide access to an ever-increasing amount of data. 
 Numerous machine-learning techniques have already been employed: one of the areas in which its use has proved to be of great help is certainly that of __Supernovae__ (SNs).
 
