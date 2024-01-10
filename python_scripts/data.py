@@ -130,6 +130,16 @@ def make_data(folder_path):
         for column in num_columns:
             df[column] = df[column].apply(str_to_float)
         
+        # Drop nan values from the dataframe and reset the index
+        df.dropna(inplace=True)
+        df.reset_index(drop=True, inplace=True)
+
+        # Modify the third array inside each filter's column of the dataframe so that each element is subtracted by the minimum value 
+        # of the array - get the days since the first observation
+        for flt in tqdm(['g', 'r', 'i', 'z'], desc='Filter\n', bar_format='{l_bar}{bar:20}{r_bar}{bar:-20b}'):
+            for i in range(len(df[flt])):
+                df[flt][i][0] = np.array([x - df[flt][i][0][0] for x in df[flt][i][0]])
+        
         # Save the dataframe as a .pkl file to preserve the lists of floats
         df.to_pickle('dataset.pkl')
 
@@ -141,6 +151,8 @@ import matplotlib.pyplot as plt
 # Function to plot each filter's flux with respect to T_obs, visualizing 4 light curves for the same SN
 def plot_data(data, SNID):
     line = data[data['SNID'] == SNID].reset_index()
+    # Get the total number of observation days
+    line
     # Create a figure and an axis
     fig, ax = plt.subplots(2, 2, sharex=True, figsize=(10,6))
     plt.suptitle(f'Light curve for SNID = {SNID}', fontsize=18)
@@ -160,7 +172,7 @@ def plot_data(data, SNID):
             ax[i, j].set_ylabel('$Flux$ $\\left[ 10^{-0.4*mag + 11} \\right]$', fontsize=13, rotation=90, labelpad=10)
         # Adjust other parameters
         ax[i, j].tick_params(axis='x')
-        ax[i, j].grid(True, linestyle='--')
+        ax[i, j].grid(True, alpha=0.3, linestyle='--')
         ax[i, j].set_title(f'Filter ${flt}$', fontsize=14)
-    plt.xlabel('$T_{obs}$', fontsize=13, loc='right')
+    plt.xlabel('$T_{obs}$ $\\left[ days \\right]$', fontsize=13, loc='right')
     plt.show()
