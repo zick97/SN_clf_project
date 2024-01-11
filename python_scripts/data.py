@@ -4,6 +4,8 @@ import tarfile
 import os, sys
 from os.path import exists
 
+from python_scripts.feature_extraction import *
+
 # Function to download and extract the dataset
 def download_dataset(url='', filename='', folder=''):
     # Download the dataset
@@ -155,7 +157,7 @@ def plot_data(data, SNID):
     line
     # Create a figure and an axis
     fig, ax = plt.subplots(2, 2, sharex=True, figsize=(10,6))
-    plt.suptitle(f'Light curve for SNID = {SNID}', fontsize=18)
+    plt.suptitle(f'Light curve for SNID = {int(SNID)}', fontsize=18)
     fig.tight_layout()
     for k, flt in enumerate(['g', 'r', 'i', 'z']):
         x_values = line[flt][0][0]
@@ -176,3 +178,41 @@ def plot_data(data, SNID):
         ax[i, j].set_title(f'Filter ${flt}$', fontsize=14)
     plt.xlabel('$T_{obs}$ $\\left[ days \\right]$', fontsize=13, loc='right')
     plt.show()
+
+#------------------------------------------------------------------------
+# Function to plot both the fitted and the original light curves for each filter
+def plot_light_curves(data, par_cols, SNID):
+    line = data[data['SNID'] == SNID].reset_index()
+    # Create a figure and an axis
+    fig, ax = plt.subplots(2, 2, sharex=True, figsize=(10,6))
+    plt.suptitle(f'Light curve for SNID = {int(SNID)}', fontsize=18)
+    fig.tight_layout()
+    for k, flt in enumerate(['g', 'r', 'i', 'z']):
+        x_values = line[flt][0][0]
+        y_values = line[flt][0][1]
+        error_values = line[flt][0][2]
+        # Explicitly get the parameters of each light curve, otherwise the exec() function will not work
+        A = line[f'A_{flt}'][0]
+        B = line[f'B_{flt}'][0]
+        t0 = line[f't0_{flt}'][0]
+        t1 = line[f't1_{flt}'][0]
+        Tr = line[f'Tr_{flt}'][0]
+        Tf = line[f'Tf_{flt}'][0]
+        # Get the subplot indexes
+        i = k // 2
+        j = k % 2
+        # Plot the data with error bars
+        ax[i, j].errorbar(x_values, y_values, yerr=error_values, fmt='o', capsize=3.5, markersize=3.5, 
+                          elinewidth=1, color='black', label='Data')
+        # Plot the fitted curve
+        if A != np.nan:
+            linspace = np.linspace(x_values[0], x_values[-1], 1000)
+            ax[i, j].plot(linspace, fluxFunc(linspace, A, B, t0, t1, Tr, Tf), label='Fitted curve', color='red')
+            ax[i, j].legend(loc='upper right', fontsize=7)
+        # Position the y-axis label
+        if j == 0:
+            ax[i, j].set_ylabel('$Flux$ $\\left[ 10^{-0.4*mag + 11} \\right]$', fontsize=13, rotation=90, labelpad=10)
+        # Adjust other parameters
+        ax[i, j].tick_params(axis='x')
+        ax[i, j].grid(True, alpha=0.3, linestyle='--')
+        ax[i, j].set_title(f'Filter ${flt}$', fontsize=14)
