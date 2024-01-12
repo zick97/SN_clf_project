@@ -6,6 +6,7 @@ from os.path import exists
 
 from python_scripts.feature_extraction import *
 
+# -----------------------------------------------------------------------
 # Function to download and extract the dataset
 def download_dataset(url='', filename='', folder=''):
     # Download the dataset
@@ -216,3 +217,5 @@ def plot_light_curves(data, par_cols, SNID):
         ax[i, j].tick_params(axis='x')
         ax[i, j].grid(True, alpha=0.3, linestyle='--')
         ax[i, j].set_title(f'Filter ${flt}$', fontsize=14)
+    plt.xlabel('$T_{obs}$ $\\left[ days \\right]$', fontsize=13, loc='right')
+    plt.show()
