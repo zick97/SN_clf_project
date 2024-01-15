@@ -102,9 +102,9 @@ def str_to_float(lst):
 # in order to fill the dataframe step by step
 def make_data(folder_path):
     # Get the dataset from the file 'dataset.csv'
-    if exists('dataset.pkl'):
+    if exists('datasets/dataset.pkl'):
         print('Dataset already generated.')
-        df = pd.read_pickle('dataset.pkl')
+        df = pd.read_pickle('datasets/dataset.pkl')
     else:
         print('Generating dataset...')
         # Get the list of .DAT files starting with the prefix 'DES_SN'
@@ -144,7 +144,7 @@ def make_data(folder_path):
                 df[flt][i][0] = np.array([x - df[flt][i][0][0] for x in df[flt][i][0]])
         
         # Save the dataframe as a .pkl file to preserve the lists of floats
-        df.to_pickle('dataset.pkl')
+        df.to_pickle('datasets/dataset.pkl')
 
     return df
 

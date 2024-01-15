@@ -35,6 +35,8 @@ def plotFunc(parameters_list0=[], parameters_list1=[], labels0=[], labels1=[]):
                 'Lower $T_f$'
         ]
 
+        colors = ['firebrick', 'mediumpurple', 'orange']
+
     # Plotting
     fig, ax = plt.subplots(1, 2, sharey=True, figsize=(10,4))
     plt.suptitle('Multiple Curves with Different Parameter Combinations', fontsize=18)
@@ -44,14 +46,14 @@ def plotFunc(parameters_list0=[], parameters_list1=[], labels0=[], labels1=[]):
     # Iterate over the parameter combinations and plot the flux
     for i, params in enumerate(parameters_list0):
         y = fluxFunc(x, *params)
-        ax[0].plot(x, y, label=labels0[i])
+        ax[0].plot(x, y, label=labels0[i], color=colors[i])
         ax[0].grid(True, alpha=0.3, linestyle='--')
         ax[0].legend()
         ax[0].set_xlabel('$T_{obs}$ $\\left[ days \\right]$', fontsize=13, loc='center')
 
     for i, params in enumerate(parameters_list1):
         y = fluxFunc(x, *params)
-        ax[1].plot(x, y, label=labels1[i])
+        ax[1].plot(x, y, label=labels1[i], color=colors[i])
         ax[1].grid(True, alpha=0.3, linestyle='--')
         ax[1].legend()
         ax[1].set_xlabel('$T_{obs}$ $\\left[ days \\right]$', fontsize=13, loc='center')

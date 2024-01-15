@@ -31,7 +31,9 @@ class getParams:
                                                 maxfev=100000)
         # Fill the array with zeros if the curve_fit function does not converge
         except RuntimeError:
-            pars = np.zeros(6)
+            empty_array = np.empty(6)
+            empty_array[:] = np.nan
+            pars = empty_array
         return pars
     
     # Function to fit all the light curves in the dataframe
@@ -45,9 +47,9 @@ class getParams:
                 par_cols += [f'{par}_{flt}']
 
         # If the dataset has already been generated, just load it
-        if exists('dataset_train.pkl'):
+        if exists('datasets/dataset_train.pkl'):
             print('Dataset already generated.')
-            self.df = pd.read_pickle('dataset_train.pkl')
+            self.df = pd.read_pickle('datasets/dataset_train.pkl')
         # Otherwise, fit the light curves
         else:
             # Add the new columns to the dataframe
@@ -62,7 +64,7 @@ class getParams:
                     # Attention: to exchange the values in the dataframe, you need to use .iloc AFTER the column name
                     self.df[par].iloc[index] = fit_values[i]
             # Save the dataframe as a .pkl file to preserve the lists of floats
-            self.df.to_pickle('dataset_train.pkl')
+            self.df.to_pickle('datasets/dataset_train.pkl')
             print('Dataset generated.')
 
         # Save the parameters column names for plotting purposes
