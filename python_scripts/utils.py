@@ -123,12 +123,11 @@ from keras.callbacks import Callback
 
 # Define a custom callback to calculate average precision and recall at the end of each epoch
 class PrecisionRecallCallback(Callback):
-    def __init__(self, validation_data, verbose=0):
+    def __init__(self, validation_data):
         super().__init__()
         self.validation_data = validation_data
         self.precision_values = []
         self.recall_values = []
-        self.verbose = verbose
 
     def on_epoch_end(self, epoch, logs=None):
         x_val, y_val = self.validation_data
@@ -140,8 +139,7 @@ class PrecisionRecallCallback(Callback):
         self.precision_values.append(precision)
         self.recall_values.append(recall)
 
-        if self.verbose > 0:
-            print(f'Epoch {epoch + 1}: Precision = {precision:.4f}, Recall = {recall:.4f}')
+        print(f'Epoch {epoch + 1}: Precision = {precision:.4f}, Recall = {recall:.4f}')
 
 # -----------------------------------------------------------------------
 # Plot the learning curves

@@ -220,3 +220,27 @@ def plot_confusion_matrix(y_true, y_pred, size=(5, 5), want_report=False):
     if want_report:
         print('--------------------Classification Report--------------------')
         print(classification_report(y_true, y_pred))
+
+# -----------------------------------------------------------------------
+from collections import Counter
+
+# Function that calculates the purity of the clusters
+def purityScore(true_labels, cluster_labels):
+    # Combine true labels and cluster labels into pairs
+    paired_labels = list(zip(true_labels, cluster_labels))
+
+    # Count occurrences of each pair (true label, cluster label)
+    counts = Counter(paired_labels)
+
+    # Initialize purity
+    purity = 0.0
+
+    # Sum up the sizes of clusters for which the majority class is correctly identified
+    for cluster in set(cluster_labels):
+        majority_class = counts.most_common(1)[0][0][0]
+        purity += counts[(majority_class, cluster)]
+
+    # Normalize by the total number of data points
+    purity /= len(true_labels)
+
+    return purity
